@@ -4,6 +4,8 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -16,6 +18,29 @@ import android.view.View
 import kotlin.math.atan2
 
 class GameActivity : AppCompatActivity() {
+
+
+    companion object {
+        const val SIZE_VALUE: String = "size"
+        const val SPEED_VALUE: String = "speed"
+        const val COUNT_VALUE: String = "count"
+
+        @JvmStatic
+        fun getIntent(
+            context: Context,
+            clazz: Class<out GameActivity>,
+            sizeValue: Int,
+            speedValue: Int,
+            count: Int
+        ): Intent {
+            val intent = Intent(context, clazz).apply {
+                putExtra(SIZE_VALUE, sizeValue)
+                putExtra(SPEED_VALUE, speedValue)
+                putExtra(COUNT_VALUE, count)
+            }
+            return intent
+        }
+    }
 
     private val screenWidth by lazy { resources.displayMetrics.widthPixels }
     private val screenHeight by lazy { resources.displayMetrics.heightPixels }
@@ -30,9 +55,9 @@ class GameActivity : AppCompatActivity() {
 
 //        databaseHelper = DatabaseHelper(this) //todo
 
-        val size = intent.getIntExtra("size", 125)
-        val speed = intent.getIntExtra("speed", 2000)
-        val quantity = intent.getIntExtra("count", 0)
+        val size = intent.getIntExtra(SIZE_VALUE, 300)
+        val speed = intent.getIntExtra(SPEED_VALUE, 1500)
+        val quantity = intent.getIntExtra(COUNT_VALUE, 0)
 
 
         for (i in 0 until quantity) {
@@ -71,7 +96,9 @@ class GameActivity : AppCompatActivity() {
             val startY = mouseImageView.y
 
             val (endX, endY) = generateRandomEndCoordinates(mouseImageView)
-            val angle = Math.toDegrees(atan2((endY - startY).toDouble(), (endX - startX).toDouble())).toFloat() + 270f
+            val angle =
+                Math.toDegrees(atan2((endY - startY).toDouble(), (endX - startX).toDouble()))
+                    .toFloat() + 270f
             mouseImageView.rotation = angle
 
             val animator = ValueAnimator.ofFloat(0f, 1f).apply {
@@ -102,18 +129,22 @@ class GameActivity : AppCompatActivity() {
                 endX = Random.nextFloat() * (screenWidth - mouseImageView.width)
                 endY = 0f
             }
+
             1 -> {
                 endX = Random.nextFloat() * (screenWidth - mouseImageView.width)
                 endY = screenHeight - mouseImageView.height.toFloat()
             }
+
             2 -> {
                 endX = 0f
                 endY = Random.nextFloat() * (screenHeight - mouseImageView.height)
             }
+
             3 -> {
                 endX = screenWidth - mouseImageView.width.toFloat()
                 endY = Random.nextFloat() * (screenHeight - mouseImageView.height)
             }
+
             else -> {
                 endX = mouseImageView.x
                 endY = mouseImageView.y
@@ -141,4 +172,5 @@ class GameActivity : AppCompatActivity() {
         // Сохраняем статистику в БД при завершении игры
 //        databaseHelper.insertStatistics(totalClicks, mouseClicks) //todo
     }
+
 }
