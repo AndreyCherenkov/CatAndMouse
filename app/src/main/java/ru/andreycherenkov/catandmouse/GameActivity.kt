@@ -53,7 +53,7 @@ class GameActivity : AppCompatActivity() {
 
     private fun createMouse(size: Int, speed: Int) {
         val mouseImageView = ImageView(this).apply {
-            setImageResource(R.drawable.cat)
+            setImageResource(R.drawable.mouse2)
             layoutParams = ViewGroup.LayoutParams(size, size)
             x = Random.nextInt(0, screenWidth - size).toFloat()
             y = Random.nextInt(0, screenHeight - size).toFloat()
@@ -71,7 +71,7 @@ class GameActivity : AppCompatActivity() {
             val startY = mouseImageView.y
 
             val (endX, endY) = generateRandomEndCoordinates(mouseImageView)
-            val angle = Math.toDegrees(atan2((endY - startY).toDouble(), (endX - startX).toDouble())).toFloat()
+            val angle = Math.toDegrees(atan2((endY - startY).toDouble(), (endX - startX).toDouble())).toFloat() + 270f
             mouseImageView.rotation = angle
 
             val animator = ValueAnimator.ofFloat(0f, 1f).apply {
