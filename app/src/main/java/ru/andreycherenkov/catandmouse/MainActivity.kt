@@ -1,5 +1,6 @@
 package ru.andreycherenkov.catandmouse
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -42,54 +43,42 @@ class MainActivity : AppCompatActivity() {
         speedAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         speedSpinner.adapter = speedAdapter
 
-        sizeSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-                val selectedSize = parent.getItemAtPosition(position).toString()
-                // Здесь можно добавить логику для обработки выбранного размера
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>) {
-                // Ничего не делаем
-            }
-        }
-
-        // Обработчик выбора скорости
-        speedSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-                val selectedSpeed = parent.getItemAtPosition(position).toString()
-                // Здесь можно добавить логику для обработки выбранной скорости
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>) {
-                // Ничего не делаем
-            }
-        }
-
-        // Обработчик изменения SeekBar
         mouseCountSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
                 mouseCountDisplay.text = mouseCountSeekBar.progress.toString()
             }
 
-            override fun onStartTrackingTouch(seekBar: SeekBar) {
-                // Ничего не делаем
-            }
+            override fun onStartTrackingTouch(seekBar: SeekBar) {}
 
-            override fun onStopTrackingTouch(seekBar: SeekBar) {
-                // Ничего не делаем
-            }
+            override fun onStopTrackingTouch(seekBar: SeekBar) {}
         })
 
-        // Обработчик нажатия кнопки "Начать игру"
         startButton.setOnClickListener {
-//            val intent = Intent(this, GameActivity::class.java).apply {
-//                putExtra("size", sizeSeekBar.progress + 10)
-//                putExtra("speed", speedSeekBar.progress + 1000)
-//                putExtra("quantity", quantitySeekBar.progress + 1)
-//            }
-//            startActivity(intent)
+
+            val context: Context = this
+            val sizeOptions = context.resources.getStringArray(R.array.size_options)
+            val speedOptions = context.resources.getStringArray(R.array.speed_options)
+            val selectedSize = sizeSpinner.selectedItem.toString()
+            val selectedSpeed = speedSpinner.selectedItem.toString()
+
+            val sizeValue = when (selectedSize) {
+                sizeOptions[0] -> 150
+                sizeOptions[1] -> 300
+                sizeOptions[2] -> 500
+                else -> 300
+            }
+
+            val speedValue = when (selectedSpeed) {
+                speedOptions[0] -> 2000
+                speedOptions[1] -> 1500
+                speedOptions[2] -> 1000
+                else -> 1000
+            }
+
             val intent = Intent(this, GameActivity::class.java).apply {
-                putExtra("count", mouseCountSeekBar.progress)
+                putExtra(GameActivity.SIZE_VALUE, sizeValue)
+                putExtra(GameActivity.SPEED_VALUE, speedValue)
+                putExtra(GameActivity.COUNT_VALUE, mouseCountSeekBar.progress)
             }
             startActivity(intent)
         }

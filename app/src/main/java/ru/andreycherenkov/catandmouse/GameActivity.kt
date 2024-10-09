@@ -17,6 +17,13 @@ import kotlin.math.atan2
 
 class GameActivity : AppCompatActivity() {
 
+
+    companion object {
+        const val SIZE_VALUE: String = "size"
+        const val SPEED_VALUE: String = "speed"
+        const val COUNT_VALUE: String = "count"
+    }
+
     private val screenWidth by lazy { resources.displayMetrics.widthPixels }
     private val screenHeight by lazy { resources.displayMetrics.heightPixels }
 //    private lateinit var databaseHelper: DatabaseHelper //todo
@@ -30,9 +37,9 @@ class GameActivity : AppCompatActivity() {
 
 //        databaseHelper = DatabaseHelper(this) //todo
 
-        val size = intent.getIntExtra("size", 125)
-        val speed = intent.getIntExtra("speed", 2000)
-        val quantity = intent.getIntExtra("count", 0)
+        val size = intent.getIntExtra(SIZE_VALUE, 300)
+        val speed = intent.getIntExtra(SPEED_VALUE, 1500)
+        val quantity = intent.getIntExtra(COUNT_VALUE, 0)
 
 
         for (i in 0 until quantity) {
