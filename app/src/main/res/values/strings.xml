@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">CatAndMouse</string>
+    <string name="start">Старт</string>
+    <string name="stats">Счёт</string>
+    <string name="label">CatAndMouse</string>
+    <string name="mouse_size">Выберите размер мышки:</string>
+    <string name="mouse_speed">Выберите скорость мышки:</string>
+    <string name="mouse_count">Количество мышек:</string>
+    <string name="cat_image">Картинка кота</string>
+    <string-array name="size_options">
+        <item>Маленькая</item>
+        <item>Средняя</item>
+        <item>Большая</item>
+    </string-array>
+    <string-array name="speed_options">
+        <item>Медленно</item>
+        <item>Средне</item>
+        <item>Быстро</item>
+    </string-array>
+</resources>
