@@ -15,10 +15,10 @@ import kotlinx.coroutines.*
 
 import android.view.MotionEvent
 import android.view.View
+import android.widget.TextView
 import kotlin.math.atan2
 
 class GameActivity : AppCompatActivity() {
-
 
     companion object {
         const val SIZE_VALUE: String = "size"
@@ -44,7 +44,8 @@ class GameActivity : AppCompatActivity() {
 
     private val screenWidth by lazy { resources.displayMetrics.widthPixels }
     private val screenHeight by lazy { resources.displayMetrics.heightPixels }
-//    private lateinit var databaseHelper: DatabaseHelper //todo
+    private lateinit var totalClicksDb: TotalClicksDao
+    private lateinit var hitStatsTextView: TextView
 
     private var totalClicks = 0
     private var mouseClicks = 0
@@ -52,8 +53,8 @@ class GameActivity : AppCompatActivity() {
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-//        databaseHelper = DatabaseHelper(this) //todo
+        setContentView(R.layout.activity_game)
+        initViews()
 
         val size = intent.getIntExtra(SIZE_VALUE, 300)
         val speed = intent.getIntExtra(SPEED_VALUE, 1500)
@@ -64,16 +65,20 @@ class GameActivity : AppCompatActivity() {
             createMouse(size, speed)
         }
 
-        // Устанавливаем слушатель нажатий на экран
         findViewById<View>(android.R.id.content).setOnTouchListener { _, event ->
             if (event.action == MotionEvent.ACTION_DOWN) {
                 totalClicks++
                 if (isMouseClicked(event.x, event.y)) {
                     mouseClicks++
+                    updateHitStats()
                 }
             }
             true
         }
+    }
+
+    private fun updateHitStats() {
+        hitStatsTextView.text = "Попадания: $mouseClicks"
     }
 
     private fun createMouse(size: Int, speed: Int) {
@@ -112,7 +117,7 @@ class GameActivity : AppCompatActivity() {
 
             animator.addListener(object : AnimatorListenerAdapter() {
                 override fun onAnimationEnd(animation: Animator) {
-                    moveMouse(mouseImageView, speed) // Перемещаем мышку снова
+                    moveMouse(mouseImageView, speed)
                 }
             })
 
@@ -129,48 +134,48 @@ class GameActivity : AppCompatActivity() {
                 endX = Random.nextFloat() * (screenWidth - mouseImageView.width)
                 endY = 0f
             }
-
             1 -> {
                 endX = Random.nextFloat() * (screenWidth - mouseImageView.width)
                 endY = screenHeight - mouseImageView.height.toFloat()
             }
-
             2 -> {
                 endX = 0f
                 endY = Random.nextFloat() * (screenHeight - mouseImageView.height)
             }
-
             3 -> {
                 endX = screenWidth - mouseImageView.width.toFloat()
                 endY = Random.nextFloat() * (screenHeight - mouseImageView.height)
             }
-
             else -> {
                 endX = mouseImageView.x
                 endY = mouseImageView.y
             }
         }
+
         return Pair(endX, endY)
     }
 
 
+
     private fun isMouseClicked(x: Float, y: Float): Boolean {
-        // Проверяем все мышки на экране
         for (i in 0 until (findViewById<ViewGroup>(android.R.id.content)).childCount) {
             val child = (findViewById<ViewGroup>(android.R.id.content)).getChildAt(i)
             if (child is ImageView) {
                 if (x >= child.x && x <= child.x + child.width && y >= child.y && y <= child.y + child.height) {
-                    return true // Попали по мышке
+                    return true
                 }
             }
         }
-        return false // Не попали ни по одной мышке
+        return false
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        // Сохраняем статистику в БД при завершении игры
-//        databaseHelper.insertStatistics(totalClicks, mouseClicks) //todo
+        totalClicksDb.insertStatistics(totalClicks, mouseClicks)
     }
 
+    private fun initViews() {
+        hitStatsTextView = findViewById(R.id.hitStatsTextView)
+        totalClicksDb = TotalClicksDao(this)
+    }
 }

@@ -8,10 +8,11 @@
         android:id="@+id/statsTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Статистика игр"
+        android:text="@string/statistic_label"
         android:textSize="24sp"
         android:textStyle="bold"
         android:layout_gravity="center"
+        android:layout_marginTop="32dp"
         android:paddingBottom="16dp"/>
 
     <androidx.recyclerview.widget.RecyclerView

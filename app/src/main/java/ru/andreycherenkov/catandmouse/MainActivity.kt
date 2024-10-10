@@ -84,7 +84,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         scoreButton.setOnClickListener {
-            val intent = Intent(this, StatsActivity::class.java)
+            val intent = StatsActivity.getIntent(this, StatsActivity::class.java)
             startActivity(intent)
         }
 

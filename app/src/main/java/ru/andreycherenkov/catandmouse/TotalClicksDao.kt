@@ -1,5 +1,6 @@
 package ru.andreycherenkov.catandmouse
 
+import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
@@ -36,4 +37,33 @@ class TotalClicksDao(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         db.insert(TABLE_NAME, null, values)
         db.close()
     }
+
+    @SuppressLint("Range")
+    fun getLast10Games(): List<GameStats> {
+        val gamesList = mutableListOf<GameStats>()
+        val db = readableDatabase
+
+        val cursor = db.query(
+            TABLE_NAME,
+            arrayOf(COLUMN_TOTAL_CLICKS, COLUMN_MOUSE_CLICKS),
+            null,
+            null,
+            null,
+            null,
+            "$COLUMN_ID DESC",
+            "10"
+        )
+
+        while (cursor.moveToNext()) {
+            val totalClicks = cursor.getInt(cursor.getColumnIndex(COLUMN_TOTAL_CLICKS))
+            val mouseClicks = cursor.getInt(cursor.getColumnIndex(COLUMN_MOUSE_CLICKS))
+            gamesList.add(GameStats(totalClicks, mouseClicks))
+        }
+
+        cursor.close()
+        db.close()
+
+        return gamesList
+    }
+
 }
